@@ -19,23 +19,29 @@
             </span>
         </div>
 
-        <nav class="flex-1 px-4 py-4 space-y-1 text-sm">
-            <a href="{{ url('/') }}" class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                Dashboard
-            </a>
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                Clients
-            </a>
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                Services
-            </a>
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                Interaction Logs
-            </a>
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-                Reports
-            </a>
-        </nav>
+    <nav class="flex-1 px-4 py-4 space-y-1 text-sm">
+        <a href="{{ route('dashboard') }}"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Dashboard
+        </a>
+        <a href="{{ route('clients.index') }}"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Clients
+        </a>
+        <a href="#"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Services
+        </a>
+        <a href="#"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Interaction Logs
+        </a>
+        <a href="#"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Reports
+        </a>
+    </nav>
+
 
         <div class="px-4 py-4 border-t border-slate-700 text-xs text-slate-400">
             <div>Login as: <span class="text-slate-200 font-medium">Demo User</span></div>
