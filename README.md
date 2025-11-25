@@ -1,59 +1,229 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Client Service Tracker System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A **Web-Based Client Information & Service Tracking System** built with Laravel, designed to replace manual and spreadsheet-based workflows for managing clients, services, and interaction history. This system focuses on data consistency, scalability, and maintainability following modern Full Stack best practices.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Project Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Client Service Tracker adalah aplikasi berbasis web untuk perusahaan skala menengah yang membutuhkan sistem terpusat dalam mengelola:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* Data klien dan profil perusahaan
+* Layanan yang sedang berjalan
+* Riwayat interaksi dan komunikasi
+* Monitoring status & deadline layanan
+* Reporting dan analisis data
 
-## Learning Laravel
+Sistem ini dirancang dengan arsitektur modular dan scalable menggunakan prinsip:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* Separation of Concerns
+* Service Layer Pattern
+* Form Request Validation
+* Clean MVC Structure
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🚀 Core Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Client Management
 
-### Premium Partners
+* CRUD Client
+* Search & filtering (status, segment, keyword)
+* Detail page dengan ringkasan layanan & interaksi
+* Segment tagging (VIP, SME, dll)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Service Tracking
 
-## Contributing
+* Satu client bisa memiliki banyak service
+* Field utama:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+  * Service name
+  * Start date & Due date
+  * PIC
+  * Priority (low, medium, high, critical)
+  * Status (new, in_progress, completed, dll)
+* Deteksi overdue otomatis
 
-## Code of Conduct
+### 3. Interaction Logs
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Mencatat semua komunikasi dengan klien:
 
-## Security Vulnerabilities
+  * Call, Email, Meeting, Chat
+* Next Action + Due Date
+* Attachment file support
+* Overdue reminder logic
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Role-Based Access Control (RBAC)
 
-## License
+* Super Admin
+* Staff Operasional
+* Viewer / Manager
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Dashboard & Reporting
+
+* Statistik real-time:
+
+  * Total active clients
+  * Services per status
+  * Overdue items
+* Chart visual via Chart.js
+* Export ke CSV dan Excel
+
+---
+
+## 🧠 Tech Stack
+
+### Backend
+
+* Laravel 10+
+* PHP 8.1+
+* Eloquent ORM
+* Custom JWT Authentication
+
+### Frontend
+
+* Blade Template Engine
+* Tailwind CSS v4
+* Vanilla JavaScript / AJAX
+
+### Database
+
+* MySQL
+
+### Tooling
+
+* Vite
+* npm
+* Git & GitHub
+
+---
+
+## 🗂 Folder Structure (Core)
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+├── Models/
+├── Services/
+resources/
+├── views/
+│   ├── clients/
+│   ├── layouts/
+routes/
+database/
+```
+
+Arsitektur ini memastikan setiap layer memiliki tanggung jawab yang jelas dan mudah di-maintain.
+
+---
+
+## ⚙️ Installation Guide (Local Setup)
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/USERNAME/client-service-tracker.git
+cd client-service-tracker
+```
+
+### 2. Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+### 3. Setup environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Edit file `.env` sesuai konfigurasi database lokal:
+
+```
+DB_DATABASE=client_tracker
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 4. Run migration
+
+```bash
+php artisan migrate
+```
+
+### 5. Run development server
+
+```bash
+php artisan serve
+npm run dev
+```
+
+Akses aplikasi di:
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## 🔐 Security Notes
+
+* File `.env` tidak di-commit ke repository
+* JWT token digunakan untuk autentikasi
+* Role-based middleware membatasi akses tiap module
+* HTTPS recommended untuk production
+
+---
+
+## 🛠 Development Workflow
+
+Setiap perubahan fitur direkomendasikan mengikuti pola:
+
+```bash
+git status
+git add .
+git commit -m "Deskripsi fitur"
+git push
+```
+
+Contoh commit message:
+
+* `Add client detail page`
+* `Implement service tracking CRUD`
+* `Integrate RBAC middleware`
+
+---
+
+## 📈 Roadmap
+
+* ✅ Client CRUD + Detail Page
+* ✅ Base UI Layout
+* 🔄 Service Tracking Module
+* 🔄 Interaction Log System
+* 🔄 JWT Authentication
+* 🔄 RBAC Policies
+* 🔄 Dashboard Metrics
+* 🔄 Export & Reporting
+
+---
+
+## 📄 License
+
+This project is developed for educational and internal enterprise purposes.
+
+---
+
+## 👨‍💻 Author
+
+**Wahyu Ali Marzuki**
+Student - Software Engineering (PPLG)
+
+---
+
+## 💬 Notes
+
+Proyek ini dikembangkan dengan pendekatan profesional dan siap untuk di-scale dalam lingkungan production. Semua keputusan teknis difokuskan pada maintainability, readability, dan clean architecture.
+
+Jika ingin menggunakan sebagai base project untuk sistem serupa, disarankan untuk melakukan review ulang pada konfigurasi security dan environment sebelum deployment.
