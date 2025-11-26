@@ -83,9 +83,9 @@
                 @else
                     <span class="text-slate-500 text-sm">No interaction logged yet.</span>
                 @endif
+                </div>
             </div>
         </div>
-    </div>
 
     {{-- Detail Client Info --}}
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
@@ -167,15 +167,19 @@
                                 {{ $service->name }}
                             </td>
                             <td class="px-3 py-2">
-                                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                                    @if($service->status === 'completed') bg-emerald-100 text-emerald-700
-                                    @elseif($service->status === 'in_progress') bg-sky-100 text-sky-700
-                                    @elseif($service->status === 'on_hold') bg-amber-100 text-amber-700
-                                    @elseif($service->status === 'cancelled') bg-slate-100 text-slate-600
-                                    @else bg-slate-100 text-slate-700 @endif">
-                                    {{ str_replace('_', ' ', ucfirst($service->status)) }}
-                                </span>
+                                <select
+                                    class="text-xs rounded-md border border-slate-300 px-2 py-1 bg-white service-status-select"
+                                    data-service-id="{{ $service->id }}"
+                                    data-update-url="{{ route('services.update-status', $service) }}"
+                                >
+                                    <option value="new" @selected($service->status === 'new')>New</option>
+                                    <option value="in_progress" @selected($service->status === 'in_progress')>In Progress</option>
+                                    <option value="on_hold" @selected($service->status === 'on_hold')>On Hold</option>
+                                    <option value="completed" @selected($service->status === 'completed')>Completed</option>
+                                    <option value="cancelled" @selected($service->status === 'cancelled')>Cancelled</option>
+                                </select>
                             </td>
+                            
                             <td class="px-3 py-2">
                                 {{ ucfirst($service->priority) }}
                             </td>
@@ -196,52 +200,104 @@
         @endif
     </div>
 
-        {{-- Interaction logs (ringkas, placeholder dulu) --}}
-        <div class="bg-white rounded-xl shadow-sm p-4">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-sm font-semibold text-slate-800">
-                    Recent Interaction Logs
-                </h3>
-                <a href="#"
-                class="text-xs rounded-lg border border-slate-300 px-3 py-1.5 hover:bg-slate-50">
-                    View All (nanti)
-                </a>
+        {{-- Interaction logs --}}
+<div class="bg-white rounded-xl shadow-sm p-4">
+    <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-semibold text-slate-800">
+            Recent Interaction Logs
+        </h3>
+
+        <a href="#"
+            class="text-xs rounded-lg border border-slate-300 px-3 py-1.5 hover:bg-slate-50">
+            View All (nanti)
+        </a>
+    </div>
+
+    {{-- Form: Add Interaction Log --}}
+    <div class="mb-4 border border-slate-200 rounded-lg p-4 bg-slate-50">
+        <h4 class="text-sm font-semibold mb-3">Add Interaction Log</h4>
+
+        <form action="{{ route('interaction-logs.store') }}" method="POST" class="space-y-3">
+            @csrf
+
+            <input type="hidden" name="client_id" value="{{ $client->id }}">
+
+            <div class="grid md:grid-cols-2 gap-3">
+                <div>
+                    <label class="text-xs font-medium">Type *</label>
+                    <select name="type" class="w-full rounded border px-2 py-1 text-sm">
+                        <option value="call">Call</option>
+                        <option value="email">Email</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="chat">Chat</option>
+                        <option value="whatsapp">WhatsApp</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium">Next Action Due</label>
+                    <input type="datetime-local" name="next_action_due_at"
+                        class="w-full rounded border px-2 py-1 text-sm">
+                </div>
             </div>
 
-        @if($client->interactionLogs->isEmpty())
-            <p class="text-sm text-slate-500">
-                No interaction logs yet for this client.
-            </p>
-        @else
-            <ul class="divide-y divide-slate-100 text-sm">
-                @foreach($client->interactionLogs->take(5) as $log)
-                    <li class="py-2 flex items-start justify-between gap-3">
-                        <div>
-                            <div class="text-xs text-slate-500">
-                                {{ $log->created_at->format('d M Y H:i') }}
-                                • {{ ucfirst($log->type) }}
-                            </div>
-                            <div class="text-slate-800">
-                                {{ \Illuminate\Support\Str::limit($log->notes, 120) }}
-                            </div>
-                            @if($log->next_action)
-                                <div class="text-xs text-slate-500 mt-1">
-                                    Next: {{ \Illuminate\Support\Str::limit($log->next_action, 80) }}
-                                    @if($log->next_action_due_at)
-                                        • Due: {{ $log->next_action_due_at->format('d M Y H:i') }}
-                                        @if($log->is_overdue)
-                                            <span class="text-red-600 font-medium"> (Overdue)</span>
-                                        @endif
-                                    @endif
-                                </div>
-                            @endif
-                        </div>
-                        <div class="text-xs text-slate-400">
-                            By: {{ $log->user?->name ?? '-' }}
-                        </div>
-                    </li>
-                @endforeach
-            </ul>
-        @endif
+            <div>
+                <label class="text-xs font-medium">Notes *</label>
+                <textarea name="notes" rows="3"
+                        class="w-full rounded border px-2 py-1 text-sm"></textarea>
+            </div>
+
+            <div>
+                <label class="text-xs font-medium">Next Action (Optional)</label>
+                <input type="text" name="next_action"
+                    class="w-full rounded border px-2 py-1 text-sm">
+            </div>
+
+            <div class="text-right">
+                <button class="bg-indigo-600 text-white px-3 py-1.5 rounded text-sm hover:bg-indigo-700">
+                    Save Log
+                </button>
+            </div>
+        </form>
     </div>
+
+    {{-- List Interaction Logs --}}
+    @if($client->interactionLogs->isEmpty())
+        <p class="text-sm text-slate-500">
+            No interaction logs yet for this client.
+        </p>
+    @else
+        <ul class="divide-y divide-slate-100 text-sm">
+            @foreach($client->interactionLogs->take(5) as $log)
+                <li class="py-2 flex items-start justify-between gap-3">
+                    <div>
+                        <div class="text-xs text-slate-500">
+                            {{ $log->created_at->format('d M Y H:i') }}
+                            • {{ ucfirst($log->type) }}
+                        </div>
+                        <div class="text-slate-800">
+                            {{ \Illuminate\Support\Str::limit($log->notes, 120) }}
+                        </div>
+
+                        @if($log->next_action)
+                            <div class="text-xs text-slate-500 mt-1">
+                                Next: {{ \Illuminate\Support\Str::limit($log->next_action, 80) }}
+                                @if($log->next_action_due_at)
+                                    • Due: {{ $log->next_action_due_at->format('d M Y H:i') }}
+                                    @if($log->is_overdue)
+                                        <span class="text-red-600 font-medium"> (Overdue)</span>
+                                    @endif
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="text-xs text-slate-400">
+                        By: {{ $log->user?->name ?? '-' }}
+                    </div>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+</div>
 @endsection
