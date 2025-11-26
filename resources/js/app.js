@@ -1,5 +1,8 @@
-import './bootstrap';
 import '../css/app.css';
+import Chart from 'chart.js/auto';
+
+// Biar bisa dipakai di Blade lewat window.Chart
+window.Chart = Chart;
 
 // Quick Service Status Update
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.service-status-select').forEach(select => {
         select.addEventListener('change', async (e) => {
             const el = e.target;
-            const serviceId = el.dataset.serviceId;
             const url = el.dataset.updateUrl;
             const newStatus = el.value;
 
@@ -36,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
 
-                // Optional: kasih efek kecil kalo sukses
                 el.classList.add('ring-2', 'ring-emerald-400');
                 setTimeout(() => {
                     el.classList.remove('ring-2', 'ring-emerald-400');
