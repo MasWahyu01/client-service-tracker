@@ -36,20 +36,21 @@ class ServiceController extends Controller
             ->route('clients.show', $service->client_id)
             ->with('success', 'Service added successfully.');
     }
-    
-        public function updateStatus(Request $request, Service $service)
+
+    /**
+     * AJAX quick status update.
+     */
+    public function updateStatus(Request $request, Service $service)
     {
         $request->validate([
             'status' => ['required', 'in:new,in_progress,on_hold,completed,cancelled'],
         ]);
 
-        $service->status = $request->input('status');
-        $service->save();
+        $updated = $this->serviceService->updateStatus($service, $request->input('status'));
 
         return response()->json([
             'success' => true,
-            'status'  => $service->status,
+            'status'  => $updated->status,
         ]);
     }
-
 }

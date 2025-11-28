@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const servicesByStatus = @json($chartData['services_by_status']);
 
 
+
     // Line chart: Services per Month
     const monthCtx = document.getElementById('servicesByMonthChart');
     if (monthCtx) {

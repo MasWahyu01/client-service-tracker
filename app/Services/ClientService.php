@@ -4,11 +4,16 @@ namespace App\Services;
 
 use App\Models\Client;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class ClientService
 {
+    public function __construct(
+        protected ActivityLogService $activityLogService
+    ) {}
+
     /**
-     * Ambil list client dengan pagination + simple filter.
+     * Pagination + filtering clients.
      */
     public function paginateClients(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
@@ -35,8 +40,9 @@ class ClientService
             $query->where('segment', $filters['segment']);
         }
 
-        return $query->orderBy('name')->paginate($perPage)
-                     ->appends($filters);
+        return $query->orderBy('name')
+            ->paginate($perPage)
+            ->appends($filters);
     }
 
     /**
@@ -44,7 +50,19 @@ class ClientService
      */
     public function createClient(array $data): Client
     {
-        return Client::create($data);
+        $client = Client::create($data);
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $client,
+            'created',
+            'Client created',
+            [
+                'attributes' => $client->toArray(),
+            ]
+        );
+
+        return $client;
     }
 
     /**
@@ -52,7 +70,23 @@ class ClientService
      */
     public function updateClient(Client $client, array $data): Client
     {
+        $original = $client->getOriginal();
+
         $client->update($data);
+
+        $changes = $client->getChanges();
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $client,
+            'updated',
+            'Client updated',
+            [
+                'before'   => $original,
+                'after'    => $client->toArray(),
+                'changes'  => $changes,
+            ]
+        );
 
         return $client;
     }
@@ -62,6 +96,18 @@ class ClientService
      */
     public function deleteClient(Client $client): void
     {
+        $snapshot = $client->toArray();
+
         $client->delete();
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $client,
+            'deleted',
+            'Client deleted',
+            [
+                'attributes' => $snapshot,
+            ]
+        );
     }
 }

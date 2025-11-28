@@ -4,9 +4,17 @@ namespace App\Services;
 
 use App\Models\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceService
 {
+    public function __construct(
+        protected ActivityLogService $activityLogService
+    ) {}
+
+    /**
+     * Pagination + filtering services.
+     */
     public function paginateServices(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
         $query = Service::with('client');
@@ -26,19 +34,93 @@ class ServiceService
         return $query->latest()->paginate($perPage)->appends($filters);
     }
 
+    /**
+     * Create service baru.
+     */
     public function createService(array $data): Service
     {
-        return Service::create($data);
-    }
+        $service = Service::create($data);
 
-    public function updateService(Service $service, array $data): Service
-    {
-        $service->update($data);
+        $this->activityLogService->log(
+            Auth::id(),
+            $service,
+            'created',
+            'Service created',
+            [
+                'attributes' => $service->toArray(),
+            ]
+        );
+
         return $service;
     }
 
+    /**
+     * Update data service (bukan status cepat).
+     */
+    public function updateService(Service $service, array $data): Service
+    {
+        $original = $service->getOriginal();
+
+        $service->update($data);
+
+        $changes = $service->getChanges();
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $service,
+            'updated',
+            'Service updated',
+            [
+                'before'  => $original,
+                'after'   => $service->toArray(),
+                'changes' => $changes,
+            ]
+        );
+
+        return $service;
+    }
+
+    /**
+     * Hapus service.
+     */
     public function deleteService(Service $service): void
     {
+        $snapshot = $service->toArray();
+
         $service->delete();
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $service,
+            'deleted',
+            'Service deleted',
+            [
+                'attributes' => $snapshot,
+            ]
+        );
+    }
+
+    /**
+     * Update status cepat (dipakai dari dropdown AJAX).
+     */
+    public function updateStatus(Service $service, string $status): Service
+    {
+        $oldStatus = $service->status;
+
+        $service->status = $status;
+        $service->save();
+
+        $this->activityLogService->log(
+            Auth::id(),
+            $service,
+            'status_changed',
+            'Service status changed',
+            [
+                'old_status' => $oldStatus,
+                'new_status' => $status,
+            ]
+        );
+
+        return $service;
     }
 }

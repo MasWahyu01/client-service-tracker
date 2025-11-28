@@ -37,6 +37,10 @@
         class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
             Interaction Logs
         </a>
+        <a href="{{ route('activity-logs.index') }}"
+        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+            Activity Logs
+        </a>
         <a href="#"
         class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
             Reports

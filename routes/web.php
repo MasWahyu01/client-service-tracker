@@ -24,3 +24,8 @@ use App\Http\Controllers\InteractionLog\InteractionLogController;
 
 Route::post('interaction-logs', [InteractionLogController::class, 'store'])
     ->name('interaction-logs.store');
+
+use App\Http\Controllers\ActivityLogController;
+
+Route::get('/activity-logs', [ActivityLogController::class, 'index'])
+    ->name('activity-logs.index');
