@@ -9,6 +9,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-800">
+@php
+    use Illuminate\Support\Str;
+@endphp
+
 
 <div class="flex min-h-screen">
 
@@ -47,10 +51,20 @@
         </a>
     </nav>
 
+        {{-- USER INFO & LOGOUT BUTTON (DYNAMIC) --}}
+        <div class="px-4 py-3 border-t border-slate-800 text-xs text-slate-400">
+            @auth
+                <div>Login as: <span class="font-semibold text-slate-200">{{ auth()->user()->name }}</span></div>
+                <div>Role: <span class="font-semibold">{{ Str::headline(str_replace('_', ' ', auth()->user()->role)) }}</span></div>
 
-        <div class="px-4 py-4 border-t border-slate-700 text-xs text-slate-400">
-            <div>Login as: <span class="text-slate-200 font-medium">Demo User</span></div>
-            <div>Role: <span class="text-slate-200 font-medium">Super Admin</span></div>
+                <form action="{{ route('logout') }}" method="POST" class="mt-2">
+                    @csrf
+                    <button type="submit"
+                            class="inline-flex items-center text-[11px] rounded border border-slate-600 px-2 py-1 hover:bg-slate-700">
+                        Logout
+                    </button>
+                </form>
+            @endauth
         </div>
     </aside>
 
