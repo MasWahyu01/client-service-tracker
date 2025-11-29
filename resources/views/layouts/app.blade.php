@@ -24,32 +24,52 @@
             </span>
         </div>
 
+    @php
+    $user = auth()->user();
+@endphp
+
     <nav class="flex-1 px-4 py-4 space-y-1 text-sm">
+        {{-- Dashboard: semua user yang login --}}
         <a href="{{ route('dashboard') }}"
         class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
             Dashboard
         </a>
-        <a href="{{ route('clients.index') }}"
-        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-            Clients
-        </a>
-        <a href="#"
-        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-            Services
-        </a>
-        <a href="#"
-        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-            Interaction Logs
-        </a>
-        <a href="{{ route('activity-logs.index') }}"
-        class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
-            Activity Logs
-        </a>
+
+        {{-- Client / Services / Interaction Logs: hanya super_admin & staff --}}
+        @if($user && ($user->isSuperAdmin() || $user->isStaff()))
+            <a href="{{ route('clients.index') }}"
+            class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+                Clients
+            </a>
+
+            {{-- nanti kalau sudah ada halaman services index --}}
+            <a href="{{ route('services.index') }}"
+            class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+                Services
+            </a>
+
+            {{-- placeholder, nanti bisa diarahkan ke halaman khusus interaction logs --}}
+            <a href="#"
+            class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+                Interaction Logs
+            </a>
+        @endif
+
+        {{-- Reports: semua role boleh lihat laporan (kalau nanti ada) --}}
         <a href="#"
         class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
             Reports
         </a>
+
+        {{-- Activity Logs: hanya Super Admin --}}
+        @if($user && $user->isSuperAdmin())
+            <a href="{{ route('activity-logs.index') }}"
+            class="flex items-center px-3 py-2 rounded-lg hover:bg-slate-800 transition">
+                Activity Logs
+            </a>
+        @endif
     </nav>
+
 
         {{-- USER INFO & LOGOUT BUTTON (DYNAMIC) --}}
         <div class="px-4 py-3 border-t border-slate-800 text-xs text-slate-400">

@@ -39,6 +39,11 @@ class ServiceService
      */
     public function createService(array $data): Service
     {
+        // Pastikan pic_id empty string -> null
+        if (isset($data['pic_id']) && $data['pic_id'] === '') {
+            $data['pic_id'] = null;
+        }
+
         $service = Service::create($data);
 
         $this->activityLogService->log(
@@ -53,6 +58,7 @@ class ServiceService
 
         return $service;
     }
+
 
     /**
      * Update data service (bukan status cepat).
